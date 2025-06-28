@@ -1,5 +1,6 @@
 [
   "templater-obsidian",
   "obsidian-importer",
-  "obsidian-icon-folder"
+  "obsidian-icon-folder",
+  "obsidian-git"
 ]
