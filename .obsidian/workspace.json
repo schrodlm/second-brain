@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "f9053e01fcf4a4be",
+    "type": "split",
+    "children": [
+      {
+        "id": "294ad1c586f496db",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a2d28b91e50556a1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Logs/dev_log_1.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "dev_log_1"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0a04a4ab1e9b7aeb",
+    "type": "split",
+    "children": [
+      {
+        "id": "8d1fa14b560ee18a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b5d89a0791dd4314",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "f2b2dd41ed5a5f78",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "microarc",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "49a4604077db0985",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 212.50210571289062
+  },
+  "right": {
+    "id": "5859e432cd22e488",
+    "type": "split",
+    "children": [
+      {
+        "id": "c1e3f05e9446f6db",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "441b2dde6527990e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Comp-Sci/Thesis/Hoare logic.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Hoare logic"
+            }
+          },
+          {
+            "id": "1b9c34640fda40a2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Comp-Sci/Thesis/Hoare logic.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Hoare logic"
+            }
+          },
+          {
+            "id": "3e691673a95ce66b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4f30a89f0e0fff25",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Comp-Sci/Thesis/Hoare logic.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Hoare logic"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "templater-obsidian:Templater": false,
+      "obsidian-importer:Open Importer": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "publish:Publish changes...": false
+    }
+  },
+  "active": "a2d28b91e50556a1",
+  "lastOpenFiles": [
+    "Logs/dev_log_1.md",
+    "Logs",
+    "Misc/Video/Script.md",
+    "Misc/Video/What do I want to say?.md",
+    "Playground/Possible patterns in LeetCode.md",
+    "Comp-Sci/Computer architecture/addressing modes.md",
+    "Comp-Sci/Computer architecture/data alignment.md",
+    "Images/Pasted image 20240930100514.png",
+    "Images/Pasted image 20240927002758.png",
+    "Images/Pasted image 20240930102116.png",
+    "Images/Pasted image 20241009111238.png",
+    "Images/Pasted image 20241009111407.png",
+    "Images/Pasted image 20241009111624.png",
+    "Images/Pasted image 20241009113115.png",
+    "Images/Pasted image 20241009113115 1.png",
+    "Images/Pasted image 20241009113118.png",
+    "Images/Pasted image 20241009132152.png",
+    "Comp-Sci/Conceptual modelling/Ullman's triangle.md",
+    "Misc/Templates/Daily Journal Template.md",
+    "Comp-Sci/Devtools/tmux.md",
+    "Books/Living Planet.md",
+    "Comp-Sci/Automata theory/semantics.md",
+    "propositional logic.md",
+    "microarchitecture.md",
+    "Misc/Stuff to delete of APT.md",
+    "Misc/Templates/Scientific Paper Notes Template.md",
+    "Comp-Sci/Thesis/Complexity Theory.md",
+    "Comp-Sci/Thesis/strongest postcondition.md",
+    "Comp-Sci/Thesis/verification condition.md",
+    "Comp-Sci/Thesis/symbolic execution.md",
+    "Comp-Sci/Thesis/weakest precondition.md",
+    "Comp-Sci/Thesis/Hoare logic.md",
+    "Comp-Sci/Thesis/execution path.md",
+    "Comp-Sci/Thesis/Writing Thesis/Užitečné odkazy.md",
+    "Comp-Sci/Thesis/Writing Thesis/theory.md",
+    "Comp-Sci/Thesis/Writing Thesis/planned structure.md",
+    "Comp-Sci/Thesis/Writing Thesis/goals.md",
+    "Comp-Sci/Thesis/Prezentace",
+    "Misc/Video",
+    "Comp-Sci/Thesis/Writing Thesis",
+    "Comp-Sci/Thesis/Resoution",
+    "Comp-Sci/Thesis",
+    "Comp-Sci/SMT/software verification/Loops",
+    "Comp-Sci/Logic",
+    "Comp-Sci/Conceptual modelling/UML",
+    "Comp-Sci/Networking/routing protocols",
+    "Untitled.canvas",
+    "Books/Untitled.canvas",
+    "Untitled 1.canvas",
+    "Untitled 2.canvas"
+  ]
+}
