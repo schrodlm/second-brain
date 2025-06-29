@@ -37,6 +37,6 @@
   "Books": "LiBook",
   "Misc": "LiAxe",
   "Comp-Sci": "LiComputer",
-  "Images": "🖼",
-  "Logs": "LiLogs"
+  "Logs": "LiLogs",
+  "Assets/Images": "🖼"
 }
