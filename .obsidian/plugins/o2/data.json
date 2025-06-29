@@ -1,0 +1,19 @@
+{
+  "obsidianPathSettings": {
+    "readyFolder": "Publish",
+    "archiveFolder": "Archive",
+    "attachmentsFolder": "Attachments",
+    "isAutoArchive": false,
+    "isAutoCreateFolder": false
+  },
+  "jekyll": {
+    "_jekyllPath": "~/home/dev/schrodlm.github.io",
+    "_jekyllRelativeResourcePath": "assets/img",
+    "_isEnableRelativeUrl": false,
+    "_isEnableCurlyBraceConvertMode": true,
+    "_isEnableUpdateFrontmatterTimeOnEdit": true
+  },
+  "docusaurus": {
+    "dateExtractionPattern": "FOLDER_NAMED_BY_DATE"
+  }
+}

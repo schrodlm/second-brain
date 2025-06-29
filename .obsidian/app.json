@@ -1,8 +1,8 @@
 {
-  "spellcheck": false,
+  "spellcheck": true,
   "showLineNumber": true,
   "promptDelete": false,
-  "vimMode": true,
+  "vimMode": false,
   "alwaysUpdateLinks": true,
   "attachmentFolderPath": "Images",
   "pdfExportSettings": {
