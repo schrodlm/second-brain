@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "294ad1c586f496db",
+        "id": "ab6b9c6e031cdcf9",
         "type": "tabs",
         "children": [
           {
-            "id": "a2d28b91e50556a1",
+            "id": "ee26e9e2be577a98",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Publish/Posts/Turing Machine.md",
+                "file": "Comp-Sci/Conceptual modelling/UML/OntoUML.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "Turing Machine"
+              "title": "OntoUML"
             }
           }
         ]
@@ -177,21 +177,35 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "14c248e4772685bc",
+  "active": "ee26e9e2be577a98",
   "lastOpenFiles": [
+    "Comp-Sci/Conceptual modelling/UML/OntoUML rigidity.md",
+    "Comp-Sci/Conceptual modelling/UML/OntoUML.md",
+    "Comp-Sci/Computer architecture/machine instruction.md",
+    "Comp-Sci/Computer architecture/ISA.md",
+    "Assets/Images/Pasted image 20241009132328.png",
+    "Comp-Sci/SMT/BTOR2.md",
+    "scripts/__pycache__/obsidian_to_jekyll.cpython-311.pyc",
+    "scripts/__pycache__/test_obsidian_to_jekyll.cpython-311.pyc",
+    "scripts/__pycache__",
+    "Comp-Sci/Computer architecture/Amdahl law.md",
+    "Comp-Sci/Computer architecture/addressing modes.md",
+    "Comp-Sci/Automata theory/semantics.md",
+    "Comp-Sci/Conceptual modelling/UFO.md",
+    "Assets",
+    "Comp-Sci/Conceptual modelling/semantic interoperability.md",
+    "Comp-Sci/Conceptual modelling/ontology.md",
+    "Comp-Sci/Conceptual modelling/conceptual modelling.md",
+    "Comp-Sci/Conceptual modelling/UML/UML.md",
+    "Publish/Posts/Turing Machine.md",
+    "scripts/test_obsidian_to_jekyll.py",
+    "scripts/obsidian_to_jekyll.py",
+    "scripts",
     "schrodlm.github.io/projects.html",
     "schrodlm.github.io/main.scss",
     "schrodlm.github.io/index.markdown",
-    "schrodlm.github.io/cv.html",
-    "schrodlm.github.io/assets/pdf/cv.pdf",
-    "schrodlm.github.io/assets/pdf",
-    "schrodlm.github.io/assets/main.scss",
-    "schrodlm.github.io/assets",
-    "schrodlm.github.io/about.html",
-    "schrodlm.github.io/_projects/thesis.markdown",
     "schrodlm.github.io/_projects/goob.md",
     "schrodlm.github.io/_projects/ascii_art.md",
-    "schrodlm.github.io/_projects",
     "second-brain/Publish/Projects/Goob the Renderer.md",
     "second-brain/Publish/Projects/Analysis of Rotor Models.md",
     "second-brain/Publish/Projects/ASCII Art Generator.md",
@@ -208,23 +222,9 @@
     "second-brain/Images/Pasted image 20241023105955.png",
     "second-brain/Images/Pasted image 20241021095419.png",
     "second-brain/Images/Pasted image 20241018201620.png",
-    "second-brain/Images/Pasted image 20241018201331.png",
     "second-brain/Comp-Sci/Virtualization/QEMU.md",
     "second-brain/Comp-Sci/SMT/software verification/model checking/specification/system specification.md",
     "second-brain/Comp-Sci/SMT/software verification/model checking/specification/LTL (linear temporal logic).md",
-    "second-brain/Comp-Sci/SMT/software verification/model checking/model checking.md",
-    "second-brain/Comp-Sci/SMT/software verification/model checking/bounded model checking.md",
-    "second-brain/Comp-Sci/SMT/software verification/informal reasoning/verifying mutable data structures.md",
-    "second-brain/Comp-Sci/SMT/software verification/informal reasoning/verifying immutable data structures.md",
-    "second-brain/Comp-Sci/SMT/software verification/informal reasoning/symbolic execution.md",
-    "second-brain/Comp-Sci/SMT/software verification/informal reasoning/logical contracts.md",
-    "second-brain/Comp-Sci/SMT/software verification/informal reasoning/ghosts.md",
-    "second-brain/Comp-Sci/SMT/software verification/software verification.md",
-    "second-brain/Comp-Sci/Networking/routing protocols/EIGRP.md",
-    "second-brain/Comp-Sci/Conceptual modelling/UML/UML.md",
-    "second-brain/Comp-Sci/Conceptual modelling/UML/OntoUML.md",
-    "second-brain/Comp-Sci/Conceptual modelling/UML/OntoUML rigidity.md",
-    "second-brain/Comp-Sci/Thesis/weakest precondition.md",
     "Untitled.canvas",
     "Books/Untitled.canvas",
     "Untitled 1.canvas",
