@@ -28,8 +28,13 @@ def get_jekyll_directory(obsidian_directory, jekyll_dir=JEKYLL_DIR, publish_dir=
         raise RuntimeError(f"Directory {jekyll_dir} does not exist in Jekyll directory.")
     return jekyll_dir
 
-def get_publish_subdirectories():
-    pass
+def get_publish_subdirectories(publish_dir=PUBLISH_DIR):
+    subdirectories = []
+    for file in publish_dir.iterdir():
+        if not file.is_dir():
+            raise RuntimeError(f"File {file.name} located in the publish directory")
+        subdirectories.append(file)
+    return subdirectories
 
 def remove_contents_of(directory):
     pass
