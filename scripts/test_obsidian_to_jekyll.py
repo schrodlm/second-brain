@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, Mock
 import os
 import shutil
 import tempfile
@@ -89,5 +89,17 @@ Also references [[file2#chapter]].
             with self.assertRaises(RuntimeError):
                 get_jekyll_directory(got, self.jekyll_dir, self.obsidian_publish_dir)
 
+    def test_get_publish_subdirectories(self):
+        with patch.object(Path, 'iterdir', return_value=[Path("subdir1"), Path("subdir2"), Path("subdir3")]):
+            with self.subTest("Valid subdirectories"), patch.object(Path, 'is_dir', return_value=True):
+                    subdirectories = get_publish_subdirectories(self.obsidian_publish_dir)
+                    self.assertEqual(subdirectories, [Path('subdir1'), Path('subdir2'), Path('subdir3')])
+            
+            with self.subTest("Publish dir contains files"), self.assertRaises(RuntimeError):
+                get_publish_subdirectories(self.obsidian_publish_dir)
+        
+        with self.subTest("Unmocked"):
+            subdirectories = get_publish_subdirectories(self.obsidian_publish_dir)
+            self.assertEqual(subdirectories, [self.obsidian_subdir1, self.obsidian_subdir2])
 if __name__ == "__main__":
     unittest.main()
