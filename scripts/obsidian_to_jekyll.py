@@ -1,12 +1,32 @@
 #!/usr/bin/env python3
 
-PUBLISH_DIR = "../Publish"
-JEKYLL_DIR = "../schrodlm.github.io"
-OBSIDIAN_IMAGE_PATHS = "../Assets/Images"
-JEKYLL_IMAGE_PATHS = f"$(JEKYLL_DIR)/assets/img"
+from pathlib import Path
 
-def get_jekyll_directory(obsidian_directory):
-    pass
+JEKYLL_DIR = Path("../schrodlm.github.io/").resolve()
+OBSIDIAN_DIR = Path("..").resolve()
+
+PUBLISH_DIR = OBSIDIAN_DIR / "Publish"
+OBSIDIAN_IMAGE_PATHS = OBSIDIAN_DIR / "Assets" / "Images"
+JEKYLL_IMAGE_PATHS = JEKYLL_DIR / "assets" / "img"
+
+#Check if directories exist:
+assert JEKYLL_DIR.is_dir()
+assert OBSIDIAN_DIR.is_dir()
+assert PUBLISH_DIR.is_dir()
+assert OBSIDIAN_IMAGE_PATHS.is_dir()
+assert JEKYLL_IMAGE_PATHS.is_dir()
+
+# Example: "$PUBLISH_DIR/Posts" -> "$JEKYLL_DIR/_posts"
+def get_jekyll_directory(obsidian_directory, jekyll_dir=JEKYLL_DIR, publish_dir=PUBLISH_DIR):
+    if obsidian_directory.parent != publish_dir:
+        raise RuntimeError(f"Provided directory \"{obsidian_directory}\" is not part of publish directory")
+    publish_dirname = obsidian_directory.name
+    # All capital to lower-case + add "_" to the start
+    jekyll_dir = Path(jekyll_dir / str("_" + publish_dirname.lower()))
+    #3. Check if it exists in Jekyll dir structure
+    if not jekyll_dir.is_dir():
+        raise RuntimeError(f"Directory {jekyll_dir} does not exist in Jekyll directory.")
+    return jekyll_dir
 
 def get_publish_subdirectories():
     pass
