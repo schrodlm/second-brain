@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+import os
 
 JEKYLL_DIR = Path("../schrodlm.github.io/").resolve()
 OBSIDIAN_DIR = Path("..").resolve()
@@ -36,8 +37,17 @@ def get_publish_subdirectories(publish_dir=PUBLISH_DIR):
         subdirectories.append(file)
     return subdirectories
 
-def remove_contents_of(directory):
-    pass
+# DANGEROUS method, use with care!
+# Usable only in this directory
+def remove_contents_of(directory: Path):
+    if not directory.is_relative_to(OBSIDIAN_DIR):
+        raise RuntimeError("Trying to remove contents outside of this project! Aborted.")
+
+    for root, dirs, files in os.walk(directory, topdown=False):
+        for name in files:
+            (Path(root) / name).unlink()
+        for name in dirs:
+            (Path(root) / name).rmdir()
 
 # Skips subdirectories and files that are not markdown
 def get_directory_files(directory):
