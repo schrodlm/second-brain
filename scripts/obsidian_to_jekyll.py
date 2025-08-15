@@ -49,9 +49,12 @@ def remove_contents_of(directory: Path):
         for name in dirs:
             (Path(root) / name).rmdir()
 
-# Skips subdirectories and files that are not markdown
-def get_directory_files(directory):
-    pass
+"""
+    Retrieves the publish files that will be converted to jekyll-friendly files and published to the web
+    - currently it does assume that Publish directory will not contain any subdirectories, if such a feature is wanted, it needs to be implemented here first and foremost
+"""
+def get_directory_md_files(directory: Path) -> list[Path]:
+    return list(directory.glob("*.md"))
 
 #Makes the URLS and names jekyll friendly
 def slugify():
@@ -96,7 +99,7 @@ def main():
 
         #2. remove contents of that jekkyl subdirectory
         remove_contents_of(jekyll_subdirectory)
-        publish_files = get_directory_files(publish_subdirectory)
+        publish_files = get_directory_md_files(publish_subdirectory)
         
         #3. create jekyll-friendly files from the obsidian files and move them to appropriate places
         for publish_file in publish_files:

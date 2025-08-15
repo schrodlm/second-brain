@@ -61,18 +61,7 @@ Also references [[file2#chapter]].
         shutil.rmtree(self.test_dir)
         pass
     
-    # Test get_directory_files
-    @patch('os.listdir')
-    @patch('os.path.isdir')
-    @patch('os.path.isfile')
-    def test_get_directory_files(self, mock_isfile, mock_isdir, mock_listdir):
-        mock_listdir.return_value = ['valid.md', 'invalid.txt', 'subdir']
-        mock_isdir.side_effect = lambda x: x.endswith('subdir')
-        mock_isfile.side_effect = lambda x: not x.endswith('subdir')
-        
-        directory_files = get_directory_files('/test/dir')
-        directory_files == ['valid.md']
-    
+
     def test_get_jekyll_directory(self):
         with self.subTest("Valid directory test"):
             got = self.obsidian_subdir1
@@ -126,6 +115,9 @@ Also references [[file2#chapter]].
                 # Assert: The directory should still exist, but be empty
                 self.assertTrue(target_dir.exists())
                 self.assertEqual(list(target_dir.iterdir()), [], "Directory should be empty after removal")
+                #Clean up
+                shutil.rmtree(target_dir)
+
             
             # --- Sub-test 2: Safety check to prevent dangerous deletion ---
             with self.subTest("Safety check raises error for outside directory"):
@@ -141,9 +133,91 @@ Also references [[file2#chapter]].
                 # Assert that the outside directory and its contents were NOT deleted
                 self.assertTrue((outside_dir / "do_not_delete.txt").exists())
 
-                # Clean up the extra temporary directory
+                # Clean up
                 shutil.rmtree(outside_dir)
-        
-        pass
+
+
+    def test_get_directory_md_files(self):
+        # Test 1: Basic functionality - finds markdown files in root directory
+        with self.subTest("Finds markdown files in root directory"):
+            # Arrange
+            md_file1 = self.obsidian_publish_dir / "note1.md"
+            md_file2 = self.obsidian_publish_dir / "note2.md"
+            txt_file = self.obsidian_publish_dir / "text.txt"
+            md_file1.touch()
+            md_file2.touch()
+            txt_file.touch()
+            
+            # Act
+            result = get_directory_md_files(self.obsidian_publish_dir)
+            
+            # Assert
+            self.assertEqual(len(result), 2)
+            self.assertIn(md_file1, result)
+            self.assertIn(md_file2, result)
+            self.assertNotIn(txt_file, result)
+            
+            # Cleanup
+            md_file1.unlink()
+            md_file2.unlink()
+            txt_file.unlink()
+
+        # Test 2: Empty directory returns empty list
+        with self.subTest("Empty directory returns empty list"):
+            # Arrange
+            empty_dir = self.obsidian_publish_dir / "empty_dir"
+            empty_dir.mkdir()
+            
+            # Act
+            result = get_directory_md_files(empty_dir)
+            
+            # Assert
+            self.assertEqual(result, [])
+            
+            # Cleanup
+            empty_dir.rmdir()
+
+        # Test 3: No markdown files returns empty list
+        with self.subTest("No markdown files returns empty list"):
+            # Arrange
+            no_md_dir = self.obsidian_publish_dir / "no_md_dir"
+            no_md_dir.mkdir()
+            txt_file = no_md_dir / "file.txt"
+            csv_file = no_md_dir / "data.csv"
+            txt_file.touch()
+            csv_file.touch()
+            
+            # Act
+            result = get_directory_md_files(no_md_dir)
+            
+            # Assert
+            self.assertEqual(result, [])
+            
+            # Cleanup
+            txt_file.unlink()
+            csv_file.unlink()
+            no_md_dir.rmdir()
+
+        # Test 4: Should not follow symlinks
+        with self.subTest("Should not follow symlinks"):
+            # Arrange
+            real_md = self.obsidian_publish_dir / "real.md"
+            symlink_md = self.obsidian_publish_dir / "symlink.md"
+            real_md.touch()
+            symlink_md.symlink_to(real_md)
+            
+            # Act
+            result = get_directory_md_files(self.obsidian_publish_dir)
+            
+            # Assert
+            self.assertEqual(len(result), 2)  # Both the real file and symlink should be found
+            self.assertIn(real_md, result)
+            self.assertIn(symlink_md, result)
+            
+            # Cleanup
+            real_md.unlink()
+            symlink_md.unlink()
+
+
 if __name__ == "__main__":
     unittest.main()
