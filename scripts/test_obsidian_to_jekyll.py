@@ -10,21 +10,24 @@ class TestObsidianToJekyll(unittest.TestCase):
     def setUp(self):
         
         # Create temporary directories for testing
-        self.test_dir = Path(tempfile.mkdtemp())
+        self.obsidian_root = Path(tempfile.mkdtemp())
         
-        self.obsidian_publish_dir = self.test_dir / "Publish"
-        self.obsidian_img_dir = self.test_dir / "Assets" / "Images"
-        self.jekyll_dir = self.test_dir / "schrodlm.github.io"
-        self.jekyll_img_dir = self.jekyll_dir / "assets" / "img"
+        self.obsidian_publish_dir = self.obsidian_root / "Publish"
+        self.obsidian_img_dir = self.obsidian_root / "Assets" / "Images"
+        self.jekyll_root = self.obsidian_root / "schrodlm.github.io"
+        self.jekyll_img_dir = self.jekyll_root / "assets" / "img"
+
+        ObsidianPath.configure_root(self.obsidian_root)
+        JekyllPath.configure_root(self.jekyll_root)
 
         self.obsidian_publish_dir.mkdir(parents=True, exist_ok=True)
         self.obsidian_img_dir.mkdir(parents=True, exist_ok=True)
-        self.jekyll_dir.mkdir(parents=True, exist_ok=True)
+        self.jekyll_root.mkdir(parents=True, exist_ok=True)
         self.jekyll_img_dir.mkdir(parents=True, exist_ok=True)
 
         # Create jekyll subdirectory
-        self.jekyll_subdir1 = self.jekyll_dir / "_posts"
-        self.jekyll_subdir2 = self.jekyll_dir / "_projects"
+        self.jekyll_subdir1 = self.jekyll_root / "_posts"
+        self.jekyll_subdir2 = self.jekyll_root / "_projects"
         self.jekyll_subdir1.mkdir(parents=True, exist_ok=True)
         self.jekyll_subdir2.mkdir(parents=True, exist_ok=True)
 
@@ -58,25 +61,48 @@ Also references [[file2#chapter]].
           
     def tearDown(self):
         # Clean up temporary directories
-        shutil.rmtree(self.test_dir)
+        shutil.rmtree(self.obsidian_root)
         pass
-    
+
+    def test_path_validation(self):
+            """Test the ObsidianPath and JekyllPath validation."""
+            # Configure the paths for testing
+            with patch('obsidian_to_jekyll.OBSIDIAN_ROOT', self.obsidian_root), \
+                patch('obsidian_to_jekyll.JEKYLL_ROOT', self.jekyll_root):
+                
+                # --- Valid Paths ---
+                with self.subTest("Valid ObsidianPath"):
+                    valid_obsidian = ObsidianPath(self.obsidian_subdir1 / "file1.md")
+                    self.assertTrue(valid_obsidian.exists())
+                    
+                with self.subTest("Valid JekyllPath"):
+                    valid_jekyll = JekyllPath(self.jekyll_subdir1 / "post.md")
+                    self.assertTrue(valid_jekyll.parent.exists())
+                
+                # --- Invalid Paths ---
+                with self.subTest("Invalid ObsidianPath"):
+                    with self.assertRaises(ValueError):
+                        ObsidianPath(Path(tempfile.mkdtemp()))
+                        
+                with self.subTest("Invalid JekyllPath"):
+                    with self.assertRaises(ValueError):
+                        JekyllPath(self.obsidian_publish_dir / "outside_jekyll.md")
 
     def test_get_jekyll_directory(self):
         with self.subTest("Valid directory test"):
             got = self.obsidian_subdir1
             want = self.jekyll_subdir1
-            self.assertEqual(want,get_jekyll_directory(got, self.jekyll_dir, self.obsidian_publish_dir))
+            self.assertEqual(want,get_jekyll_directory(got, self.jekyll_root, self.obsidian_publish_dir))
 
         with self.subTest("Not created in Jekyll dir structure"):
             got = self.obsidian_publish_dir / "DoesNotExistsInJekyll"
             with self.assertRaises(RuntimeError):
-                get_jekyll_directory(got, self.jekyll_dir, self.obsidian_publish_dir)
+                get_jekyll_directory(got, self.jekyll_root, self.obsidian_publish_dir)
         
         with self.subTest("Invalid parent"):
             got = self.obsidian_img_dir / "Posts"
             with self.assertRaises(RuntimeError):
-                get_jekyll_directory(got, self.jekyll_dir, self.obsidian_publish_dir)
+                get_jekyll_directory(got, self.jekyll_root, self.obsidian_publish_dir)
 
     def test_get_publish_subdirectories(self):
         with patch.object(Path, 'iterdir', return_value=[Path("subdir1"), Path("subdir2"), Path("subdir3")]):
@@ -95,7 +121,7 @@ Also references [[file2#chapter]].
         # This function has a safety check that depends on a global constant,
         # OBSIDIAN_DIR. We use `patch` to temporarily set this constant
         # to our main test directory for the duration of this test.
-        with patch('obsidian_to_jekyll.OBSIDIAN_DIR', self.test_dir):
+        with patch('obsidian_to_jekyll.JEKYLL_ROOT', self.obsidian_root):
             
             # --- Sub-test 1: Successful removal of contents ---
             with self.subTest("Successful removal of contents"):
