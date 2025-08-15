@@ -58,7 +58,7 @@ Also references [[file2#chapter]].
           
     def tearDown(self):
         # Clean up temporary directories
-        #shutil.rmtree(self.test_dir)
+        shutil.rmtree(self.test_dir)
         pass
     
     # Test get_directory_files
@@ -93,13 +93,57 @@ Also references [[file2#chapter]].
         with patch.object(Path, 'iterdir', return_value=[Path("subdir1"), Path("subdir2"), Path("subdir3")]):
             with self.subTest("Valid subdirectories"), patch.object(Path, 'is_dir', return_value=True):
                     subdirectories = get_publish_subdirectories(self.obsidian_publish_dir)
-                    self.assertEqual(subdirectories, [Path('subdir1'), Path('subdir2'), Path('subdir3')])
+                    self.assertEqual(subdirectories, [Path('subdir1'), Path('subdir2'), Path('subdir3')], "Listed publish subdirectories are not correct.")
             
             with self.subTest("Publish dir contains files"), self.assertRaises(RuntimeError):
                 get_publish_subdirectories(self.obsidian_publish_dir)
         
         with self.subTest("Unmocked"):
             subdirectories = get_publish_subdirectories(self.obsidian_publish_dir)
-            self.assertEqual(subdirectories, [self.obsidian_subdir1, self.obsidian_subdir2])
+            self.assertEqual(subdirectories, [self.obsidian_subdir1, self.obsidian_subdir2], "Listed publish subdirectories are not correct.")
+    
+    def test_remove_contents_of(self):
+        # This function has a safety check that depends on a global constant,
+        # OBSIDIAN_DIR. We use `patch` to temporarily set this constant
+        # to our main test directory for the duration of this test.
+        with patch('obsidian_to_jekyll.OBSIDIAN_DIR', self.test_dir):
+            
+            # --- Sub-test 1: Successful removal of contents ---
+            with self.subTest("Successful removal of contents"):
+                # Arrange: Create a directory structure to be deleted
+                target_dir = Path(self.jekyll_subdir1 / "test_removal_directory")
+                target_dir.mkdir()
+                test_file = target_dir / "file_to_delete.md"
+                test_file.write_text("some content")
+                nested_dir = target_dir / "nested_dir"
+                nested_dir.mkdir()
+                nested_file = nested_dir / "nested_file.txt"
+                nested_file.write_text("more content")
+
+                # Act: Call the function to clear the directory
+                remove_contents_of(target_dir)
+
+                # Assert: The directory should still exist, but be empty
+                self.assertTrue(target_dir.exists())
+                self.assertEqual(list(target_dir.iterdir()), [], "Directory should be empty after removal")
+            
+            # --- Sub-test 2: Safety check to prevent dangerous deletion ---
+            with self.subTest("Safety check raises error for outside directory"):
+                # Arrange: Create a separate temp directory outside the "safe" zone
+                outside_dir = Path(tempfile.mkdtemp())
+                # Add a file to it to ensure it's not empty
+                (outside_dir / "do_not_delete.txt").touch()
+
+                # Act & Assert: Expect a RuntimeError when trying to delete outside the safe zone
+                with self.assertRaisesRegex(RuntimeError, "Trying to remove contents outside of this project! Aborted."):
+                    remove_contents_of(outside_dir)
+
+                # Assert that the outside directory and its contents were NOT deleted
+                self.assertTrue((outside_dir / "do_not_delete.txt").exists())
+
+                # Clean up the extra temporary directory
+                shutil.rmtree(outside_dir)
+        
+        pass
 if __name__ == "__main__":
     unittest.main()
