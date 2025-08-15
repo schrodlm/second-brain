@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Comp-Sci/Conceptual modelling/UML/OntoUML.md",
-                "mode": "source",
+                "file": "Publish/Posts/Turing Machine.md",
+                "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "OntoUML"
+              "title": "Turing Machine"
             }
           }
         ]
@@ -177,11 +177,15 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "b5d89a0791dd4314",
+  "active": "ee26e9e2be577a98",
   "lastOpenFiles": [
+    "Publish/Projects/Analysis of Rotor Models.md",
+    "Publish/Posts/Turing Machine.md",
+    "Comp-Sci/Computer architecture/Amdahl law.md",
+    "Comp-Sci/Computer architecture/addressing modes.md",
+    "Comp-Sci/Conceptual modelling/UML/OntoUML.md",
     "schrodlm.github.io/assets/img",
     "Comp-Sci/Conceptual modelling/UML/OntoUML rigidity.md",
-    "Comp-Sci/Conceptual modelling/UML/OntoUML.md",
     "Comp-Sci/Computer architecture/machine instruction.md",
     "Comp-Sci/Computer architecture/ISA.md",
     "Assets/Images/Pasted image 20241009132328.png",
@@ -189,8 +193,6 @@
     "scripts/__pycache__/obsidian_to_jekyll.cpython-311.pyc",
     "scripts/__pycache__/test_obsidian_to_jekyll.cpython-311.pyc",
     "scripts/__pycache__",
-    "Comp-Sci/Computer architecture/Amdahl law.md",
-    "Comp-Sci/Computer architecture/addressing modes.md",
     "Comp-Sci/Automata theory/semantics.md",
     "Comp-Sci/Conceptual modelling/UFO.md",
     "Assets",
@@ -198,13 +200,11 @@
     "Comp-Sci/Conceptual modelling/ontology.md",
     "Comp-Sci/Conceptual modelling/conceptual modelling.md",
     "Comp-Sci/Conceptual modelling/UML/UML.md",
-    "Publish/Posts/Turing Machine.md",
     "scripts/test_obsidian_to_jekyll.py",
     "scripts/obsidian_to_jekyll.py",
     "scripts",
     "schrodlm.github.io/projects.html",
     "schrodlm.github.io/main.scss",
-    "schrodlm.github.io/index.markdown",
     "schrodlm.github.io/_projects/goob.md",
     "schrodlm.github.io/_projects/ascii_art.md",
     "second-brain/Publish/Projects/Goob the Renderer.md",

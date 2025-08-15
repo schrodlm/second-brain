@@ -2,34 +2,75 @@
 
 from pathlib import Path
 import os
+from typing import Union, TypeVar, Type
 
-JEKYLL_DIR = Path("../schrodlm.github.io/").resolve()
-OBSIDIAN_DIR = Path("..").resolve()
+JEKYLL_ROOT = Path("../schrodlm.github.io/").resolve()
+OBSIDIAN_ROOT = Path("..").resolve()
 
-PUBLISH_DIR = OBSIDIAN_DIR / "Publish"
-OBSIDIAN_IMAGE_PATHS = OBSIDIAN_DIR / "Assets" / "Images"
-JEKYLL_IMAGE_PATHS = JEKYLL_DIR / "assets" / "img"
+PUBLISH_DIR = OBSIDIAN_ROOT / "Publish"
+OBSIDIAN_IMAGE_PATHS = OBSIDIAN_ROOT / "Assets" / "Images"
+JEKYLL_IMAGE_PATHS = JEKYLL_ROOT / "assets" / "img"
 
 #Check if directories exist:
-assert JEKYLL_DIR.is_dir()
-assert OBSIDIAN_DIR.is_dir()
+assert JEKYLL_ROOT.is_dir()
+assert OBSIDIAN_ROOT.is_dir()
 assert PUBLISH_DIR.is_dir()
 assert OBSIDIAN_IMAGE_PATHS.is_dir()
 assert JEKYLL_IMAGE_PATHS.is_dir()
 
-# Example: "$PUBLISH_DIR/Posts" -> "$JEKYLL_DIR/_posts"
-def get_jekyll_directory(obsidian_directory, jekyll_dir=JEKYLL_DIR, publish_dir=PUBLISH_DIR):
-    if obsidian_directory.parent != publish_dir:
-        raise RuntimeError(f"Provided directory \"{obsidian_directory}\" is not part of publish directory")
-    publish_dirname = obsidian_directory.name
-    # All capital to lower-case + add "_" to the start
-    jekyll_dir = Path(jekyll_dir / str("_" + publish_dirname.lower()))
-    #3. Check if it exists in Jekyll dir structure
-    if not jekyll_dir.is_dir():
-        raise RuntimeError(f"Directory {jekyll_dir} does not exist in Jekyll directory.")
-    return jekyll_dir
+T = TypeVar('T', bound='BaseValidatedPath')
 
-def get_publish_subdirectories(publish_dir=PUBLISH_DIR):
+class BaseValidatedPath:
+    """Base class for validated path wrappers."""
+    _root: Path  # Must be set in child classes or via configure_root()
+
+    def __init__(self, path: Union[str, Path]):
+        self._path = Path(path).expanduser().absolute()
+        self._validate()
+
+    def _validate(self):
+        """Ensure path is within the configured root."""
+        try:
+            if not self._path.is_relative_to(self.__class__._root):
+                raise ValueError(f"Path {self._path} is outside {self.__class__.__name__} root")
+        except (FileNotFoundError, RuntimeError) as e:
+            raise ValueError(f"Invalid path: {e}")
+    
+    # Overrding root - for testing purposes
+    @classmethod
+    def configure_root(cls: Type[T], root: Union[str, Path]) -> None:
+        """Configure the root directory for validation."""
+        cls._root = Path(root).resolve()
+
+    @property
+    def path(self) -> Path:
+        """Access the raw Path object when needed."""
+        return self._path
+
+    # Delegate all other attributes to the wrapped Path
+    def __getattr__(self, name):
+        return getattr(self._path, name)
+
+class ObsidianPath(BaseValidatedPath):
+    """Path guaranteed to be within the Obsidian vault."""
+    _root = OBSIDIAN_ROOT
+
+class JekyllPath(BaseValidatedPath):
+    """Path guaranteed to be within the Jekyll site."""
+    _root = JEKYLL_ROOT
+
+# Example: "$PUBLISH_DIR/Posts" -> "$JEKYLL_DIR/_posts"
+def get_jekyll_directory(publish_subdir: ObsidianPath, jekyll_root: JekyllPath = JEKYLL_ROOT, publish_dir: ObsidianPath = PUBLISH_DIR) -> JekyllPath:
+    if publish_subdir.parent != publish_dir:
+        raise RuntimeError(f"Provided directory \"{publish_subdir}\" is not part of publish directory")
+    # All capital to lower-case + add "_" to the start
+    jekyll_root = Path(jekyll_root / str("_" + publish_subdir.name.lower()))
+    #3. Check if it exists in Jekyll dir structure
+    if not jekyll_root.is_dir():
+        raise RuntimeError(f"Directory {jekyll_root} does not exist in Jekyll directory.")
+    return jekyll_root
+
+def get_publish_subdirectories(publish_dir: ObsidianPath = PUBLISH_DIR):
     subdirectories = []
     for file in publish_dir.iterdir():
         if not file.is_dir():
@@ -39,8 +80,8 @@ def get_publish_subdirectories(publish_dir=PUBLISH_DIR):
 
 # DANGEROUS method, use with care!
 # Usable only in this directory
-def remove_contents_of(directory: Path):
-    if not directory.is_relative_to(OBSIDIAN_DIR):
+def remove_contents_of(directory: JekyllPath):
+    if not directory.is_relative_to(JEKYLL_ROOT):
         raise RuntimeError("Trying to remove contents outside of this project! Aborted.")
 
     for root, dirs, files in os.walk(directory, topdown=False):
@@ -50,14 +91,24 @@ def remove_contents_of(directory: Path):
             (Path(root) / name).rmdir()
 
 """
-    Retrieves the publish files that will be converted to jekyll-friendly files and published to the web
-    - currently it does assume that Publish directory will not contain any subdirectories, if such a feature is wanted, it needs to be implemented here first and foremost
+Retrieves the publish files that will be converted to jekyll-friendly files and published to the web
+- currently it does assume that Publish directory will not contain any subdirectories, if such a feature is wanted, it needs to be implemented here first and foremost
 """
 def get_directory_md_files(directory: Path) -> list[Path]:
     return list(directory.glob("*.md"))
+            
 
-#Makes the URLS and names jekyll friendly
-def slugify():
+"""
+Transform obsidian markdown files names to name parsable by jekyll 
+
+Obsidian Note Title: Hello World!.md -> hello_word.md
+
+NOTICE:
+For Jekyll native '_posts' layout it must follow a specific naming convention: YYYY-MM-DD-title.markdown,
+so a simple parsing of markdown's metadata is necessary in order to handle this convention.
+"""
+def slugify(filename: ObsidianPath):
+
     pass 
 
 def transform_obsidian_to_jekyll():
