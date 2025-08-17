@@ -12,15 +12,15 @@ JEKYLL_ROOT = Path("../schrodlm.github.io/").resolve()
 OBSIDIAN_ROOT = Path("..").resolve()
 
 PUBLISH_DIR = OBSIDIAN_ROOT / "Publish"
-OBSIDIAN_IMAGE_PATHS = OBSIDIAN_ROOT / "Assets" / "Images"
-JEKYLL_IMAGE_PATHS = JEKYLL_ROOT / "assets" / "img"
+OBSIDIAN_IMAGE_DIR = OBSIDIAN_ROOT / "Assets" / "Images"
+JEKYLL_IMAGE_DIR = JEKYLL_ROOT / "assets" / "img"
 
 #Check if directories exist:
 assert JEKYLL_ROOT.is_dir()
 assert OBSIDIAN_ROOT.is_dir()
 assert PUBLISH_DIR.is_dir()
-assert OBSIDIAN_IMAGE_PATHS.is_dir()
-assert JEKYLL_IMAGE_PATHS.is_dir()
+assert OBSIDIAN_IMAGE_DIR.is_dir()
+assert JEKYLL_IMAGE_DIR.is_dir()
 
 T = TypeVar('T', bound='BaseValidatedPath')
 
@@ -252,33 +252,44 @@ def slugify(filepath: ObsidianPath):
             
     return slug
 
-def transform_obsidian_to_jekyll(filepath: ObsidianPath):
-    slugify(filepath)
-    transform_references()
-    images = get_referenced_images()
-    pass 
 
 # Can be in forms:
     #1. [[Reference]]
     #2. [[SMT#bit-vectors]]
     #3. [[RealReference | Text]] | [[RealReference| Text]] | [[RealReference |Text]]
-def transform_references():
-    # Fixed obsidian URLS to jekyll-friendly ones
-        #If URL points to file not in publish directory -> remove the link, but leave the text
-        #If URL points to file in publish directory -> transform the link
-    #Slugify them
-    pass
+#If URL points to file not in publish directory -> remove the link, but leave the text
+#If URL points to file in publish directory -> transform the link
+def transform_references(filepath: JekyllPath):
+    """
+    Only used to get rid of the references in a transferred file from Obsidian to Jekyll. No complex linking for non-images 
+    is implemented as of now but may be implemented in the future.
+    The only exceptions are images, which are transfered from OBSIDIAN_IMAGE_DIR to JEKYLL_IMAGE_DIR
+        Image reference can be in form:
+        1. ![Alt text](path/to/image.png)
+        2. ![[image.png]]                           - has to be in image folder (specified in Obsidian config) 
+        3. ![[path/to/image.png|200]]               - fixed width
+        4. ![[path/to/image.png|200x100]]           - fixed width and height
+        5. ![[path/to/image.png|My Alt Text]]       - alt text
+        6. ![[path/to/image.png|My Alt Text|200]]   - alt text + resize
+    """
+
+def copy_file(src: Path, dst: Path):
+    dst.write_bytes(src.read_bytes())
+
+
+def transfer_publish_file(source_filepath: ObsidianPath, target_directory: JekyllPath):
+    jekyll_filename = slugify(source_filepath)
+
+    dst = target_directory / jekyll_filename
+    copy_file(source_filepath, target_directory/jekyll_filename)
+
+    transform_references(dst)
+
 
 # Image reference can be in form:
     #1. ![[image.png]] // has to be in Assets/Image
-def get_referenced_images():
+def get_referenced_images(filepath: JekyllPath):
     # Gets the paths of referenced images
-    pass
-
-def transfer_file(file, directory):
-    pass
-
-def transfer_images(images):
     pass
 
 def main():
@@ -286,8 +297,6 @@ def main():
 
     for publish_subdirectory in publish_subdirectories:
         jekyll_subdirectory = get_jekyll_directory(publish_subdirectory)
-        #1. prepare set of referenced images
-        referenced_images = {}
 
         #2. remove contents of that jekkyl subdirectory
         remove_contents_of(jekyll_subdirectory)
@@ -297,14 +306,12 @@ def main():
         published = 0
         for publish_file in publish_files:
             try:
-                jekyll_file, new_referenced_images = transform_obsidian_to_jekyll(ObsidianPath(publish_file))
-                referenced_images += new_referenced_images
-                transfer_file(jekyll_file, jekyll_subdirectory)
+                transfer_publish_file(publish_file, jekyll_subdirectory)
+                #4. copy referenced images into image section
+                transfer_referenced_images(jekyll_subdirectory / jekyll_file)
 
+                publish = publish+1
                 print(f"Transfered {publish_file}. [{published}/{len(publish_files)}]")
             except PublishTransformError as e:
                 print(f"Transfering failed for {e.filepath}")
                 print(f"Reason: {e.reason}")
-
-        #4. copy referenced images into image section
-        transfer_images(referenced_images)
