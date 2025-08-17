@@ -470,5 +470,60 @@ date: 2024-1-5
             self.assertEqual(slugify(test_file), "file-name-with-chars.txt")
             test_file.unlink()
 
+    def test_transform_md_ref(self):
+        """Unit test for transform_md_ref"""
+        test_cases = [
+            ("Reference", ""),
+            ("SMT#bit-vectors", ""),
+            ("RealReference | Text", "Text"),
+            ("RealReference|Text", "Text"),
+            ("RealReference |Text", "Text"),
+            ("Image.png|200", ""),  # Numeric only
+            ("Image.png|Alt Text", "Alt Text"),
+            ("Image.png|Alt Text|200", "Alt Text"),
+            ("", "")
+        ]
+        
+        for input_ref, expected_output in test_cases:
+            with self.subTest(input_ref=input_ref):
+                self.assertEqual(transform_md_ref(input_ref), expected_output, input_ref)
+
+
+    def test_transform_image_ref(self):
+        """
+        Unit test for transform_image_ref
+        Test cases:
+            1. ![[image.png]]                   → ![Image](image.png)
+            2. ![[image.png|200]]               → ![Image](image.png){:width="200"}
+            3. ![[image.png|200x100]]           → ![Image](image.png){:width="200" height="100"}
+            4. ![[image.png|alt text]]          → ![alt text](image.png)
+            5. ![[image.png|alt text|200]]      → ![alt text](image.png){:width="200"}
+            6. ![[subdir/image.png]]            → ![Image](subdir/image.png)
+            7. ![[image.png|alt text|200x100]]  → ![alt text](image.png){:width="200" height="100"}
+        """
+        with patch('obsidian_to_jekyll.JEKYLL_ROOT', self.jekyll_root), \
+            patch('obsidian_to_jekyll.JEKYLL_IMAGE_DIR', self.jekyll_img_dir):
+
+            relative_path = self.jekyll_img_dir.relative_to(self.jekyll_root)
+
+            test_cases = [
+                ("image.png", 
+                (f"![Image]({relative_path}/image.png)", "image.png")),
+                ("image.png|200", 
+                (f'![Image]({relative_path}/image.png){{:width="200"}}', "image.png")),
+                ("image.png|200x100", 
+                (f'![Image]({relative_path}/image.png){{:width="200" height="100"}}', "image.png")),
+                ("subdir/image.png|Alt Text", 
+                (f"![Alt Text]({relative_path}/subdir/image.png)", "subdir/image.png")),
+                ("image.png|Alt Text|200x100", 
+                (f'![Alt Text]({relative_path}/image.png){{:width="200" height="100"}}', "image.png"))
+            ]
+            
+            for input_ref, (expected_output, expected_path) in test_cases:
+                with self.subTest(input_ref=input_ref):
+                    result_output, result_path = transform_image_ref(input_ref)
+                    self.assertEqual(result_output, expected_output)
+                    self.assertEqual(result_path, Path(expected_path))
+
 if __name__ == "__main__":
     unittest.main()

@@ -21,6 +21,9 @@ assert OBSIDIAN_ROOT.is_dir()
 assert PUBLISH_DIR.is_dir()
 assert OBSIDIAN_IMAGE_DIR.is_dir()
 assert JEKYLL_IMAGE_DIR.is_dir()
+assert JEKYLL_IMAGE_DIR.is_relative_to(JEKYLL_ROOT)
+assert OBSIDIAN_IMAGE_DIR.is_relative_to(OBSIDIAN_ROOT)
+
 
 T = TypeVar('T', bound='BaseValidatedPath')
 
@@ -259,11 +262,16 @@ def slugify(filepath: ObsidianPath):
     #3. [[RealReference | Text]] | [[RealReference| Text]] | [[RealReference |Text]]
 #If URL points to file not in publish directory -> remove the link, but leave the text
 #If URL points to file in publish directory -> transform the link
-def transform_references(filepath: JekyllPath):
+def transform_references(filepath: JekyllPath, src_dir: ObsidianPath = OBSIDIAN_IMAGE_DIR, dest_dir: JekyllPath = JEKYLL_IMAGE_DIR):
     """
-    Only used to get rid of the references in a transferred file from Obsidian to Jekyll. No complex linking for non-images 
-    is implemented as of now but may be implemented in the future.
-    The only exceptions are images, which are transfered from OBSIDIAN_IMAGE_DIR to JEKYLL_IMAGE_DIR
+    Transform Obsidian-style references to Jekyll-compatible format.
+    Handles both document links and image references.
+
+    Currently simply deletes document links. No complex linking for non-images is implemented as of now, 
+    but may be implemented in the future.
+    If this will ever be implemented: https://jekyllrb.com/docs/liquid/tags/#links this is the way to do it
+
+    The only exceptions are images, which are transfered from their source to JEKYLL_IMAGE_DIR
         Image reference can be in form:
         1. ![Alt text](path/to/image.png)
         2. ![[image.png]]                           - has to be in image folder (specified in Obsidian config) 
@@ -272,19 +280,128 @@ def transform_references(filepath: JekyllPath):
         5. ![[path/to/image.png|My Alt Text]]       - alt text
         6. ![[path/to/image.png|My Alt Text|200]]   - alt text + resize
     """
+    content = filepath.read_text(encoding='utf-8')
+
+    # Patterns for different reference types
+    obsidian_link_pattern = re.compile(r'(!?)\[\[([^\]\[]+)\]\]')  # ![[ ]] or [[ ]]
+    md_link_pattern = re.compile(r'(!?)\[([^\]]+)\]\(([^)]+)\)')    # ![]() or []()
+
+    def transform_obsidian_match(match):
+        is_image = match.group(1) == '!'
+        full_ref = match.group(2)
+        if is_image:
+            new_content, relative_src_path = transform_image_ref(full_ref)
+            dst_path = dest_dir / relative_src_path # src_path should be realtive to OBSIDIAN_IMAGE_DIR
+            src_path = src_dir / relative_src_path
+
+            ensure_image_available(
+                src_path,
+                dst_path
+            )
+            return new_content
+        else:
+            return transform_md_ref(full_ref) #do nothing with non-image references
+    
+    def transform_md_match(match):
+        is_image = match.group(1) == '!'
+        alt_text = match.group(2)
+        url = match.group(3)
+        
+        if is_image and not url.startswith(('http://', 'https://')):
+            img_path = Path(url)
+            src_path = src_dir / img_path
+            dst_path = dest_dir / img_path
+            
+            if ensure_image_available(src_path, dst_path):
+                rel_path = dst_path.relative_to(filepath.parent)
+                return f"![{alt_text}]({rel_path})"
+            return alt_text
+        
+        return match.group(0)  # Leave external links and doc links unchanged
+    
+    # Transform all reference types
+    content = obsidian_link_pattern.sub(transform_obsidian_match, content)
+    content = md_link_pattern.sub(transform_md_match, content)
+
+def transform_md_ref(full_ref: str) -> str:
+    """
+    Currently simply deletes document links and extracts alt text from reference if it exists.
+    """
+    parts = [part.strip() for part in full_ref.split('|')]
+    for part in parts[1:]:
+        if not (part.isdigit()):
+            return part
+    return ""
+
+def transform_image_ref(full_ref: str, new_parent_dir: JekyllPath = JEKYLL_IMAGE_DIR, root: JekyllPath = JEKYLL_ROOT) -> str:
+    """
+    Transform Obsidian-style image references to standard Markdown.
+    Handles all these cases:
+    1. ![[image.png]]                   → ![Image](image.png)
+    2. ![[image.png|200]]               → ![Image](image.png){:width="200"}
+    3. ![[image.png|200x100]]           → ![Image](image.png){:width="200" height="100"}
+    4. ![[image.png|alt text]]          → ![alt text](image.png)
+    5. ![[image.png|alt text|200]]      → ![alt text](image.png){:width="200"}
+    6. ![[subdir/image.png]]            → ![Image](subdir/image.png)
+    7. ![[image.png|alt text|200x100]]  → ![alt text](image.png){:width="200" height="100"}
+    """
+    # Split into components and strip whitespace
+    parts = [part.strip() for part in full_ref.split('|')]
+    relative_img_path = Path(parts[0])
+    
+    # Default values
+    alt_text = "Image"
+    width = None
+    height = None
+    
+    # Process additional parameters
+    for part in parts[1:]:
+        if 'x' in part and all(s.isdigit() for s in part.split('x')):
+            # Case 3 & 7: Dimensions (200x100)
+            width, height = part.split('x')[:2]
+        elif part.isdigit():
+            # Case 2 & 5: Single dimension (200)
+            width = part
+        else:
+            # Case 4 & 5 & 7: Alt text (non-numeric)
+            alt_text = part
+    
+    # Build the image tag - 
+    img_tag = f"![{alt_text}]({(new_parent_dir/relative_img_path).relative_to(root)})"
+
+    # Add dimensions if specified
+    if width and height:
+        img_tag = f'{img_tag}{{:width="{width}" height="{height}"}}'
+    elif width:
+        img_tag = f'{img_tag}{{:width="{width}"}}'
+    
+    return img_tag, relative_img_path
+    
 
 def copy_file(src: Path, dst: Path):
     dst.write_bytes(src.read_bytes())
 
+def ensure_image_available(obsidian_img_path: Path, jekyll_img_path: Path) -> bool:
+    """Copy image if needed, returns success status"""
+    if not obsidian_img_path.exists():
+        raise PublishTransformError(obsidian_img_path, "Obsidian image path does not exist.")
+    if not jekyll_img_path.parent.exists():
+        jekyll_img_path.parent.mkdir(parents=True)
+    copy_file(obsidian_img_path, jekyll_img_path)
+    return True
 
 def transfer_publish_file(source_filepath: ObsidianPath, target_directory: JekyllPath):
     jekyll_filename = slugify(source_filepath)
 
-    dst = target_directory / jekyll_filename
-    copy_file(source_filepath, target_directory/jekyll_filename)
+    try:
+        dst = target_directory / jekyll_filename
+        copy_file(source_filepath, dst)
 
-    transform_references(dst)
-
+        transform_references(dst)
+    except PublishTransformError as e:
+        #Remove the already copied file from the Jekyll directory
+        dst.unlink()
+        raise e
 
 # Image reference can be in form:
     #1. ![[image.png]] // has to be in Assets/Image
