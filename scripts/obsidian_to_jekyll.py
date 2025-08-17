@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
 import os
-from typing import Union, TypeVar, Type
+import unicodedata
+import re
+
+from typing import Union, TypeVar, Type, Optional
+from pathlib import Path
+from datetime import datetime
 
 JEKYLL_ROOT = Path("../schrodlm.github.io/").resolve()
 OBSIDIAN_ROOT = Path("..").resolve()
@@ -19,6 +23,21 @@ assert OBSIDIAN_IMAGE_PATHS.is_dir()
 assert JEKYLL_IMAGE_PATHS.is_dir()
 
 T = TypeVar('T', bound='BaseValidatedPath')
+
+class PublishTransformError(Exception):
+    """Exception raised when a file cannot be transformed for publishing."""
+    
+    def __init__(self, filepath: str, reason: str):
+        """
+        Args:
+            file_path: Path to the file that failed transformation
+            reason: Explanation of why the transformation failed
+            original_exception: Optional original exception that caused the failure
+        """
+        self.filepath = filepath
+        self.reason = reason
+        message = f"Failed to transform '{filepath}': {reason}"
+        super().__init__(message)
 
 class BaseValidatedPath:
     """Base class for validated path wrappers."""
@@ -135,21 +154,106 @@ def read_md_metadata(markdown_path: Path):
         return {}
     return {}
 
-"""
-Transform obsidian markdown files names to name parsable by jekyll 
 
-Obsidian Note Title: Hello World!.md -> hello_word.md
+def parse_date(date_str: str) -> Optional[datetime.date]:
+    """
+    Parse a date string in various formats into a datetime.date object.
+    
+    Supported formats:
+    - YYYY-MM-DD (2024-12-20)
+    - DD.MM.YYYY (20.12.2024)
+    - DD/MM/YYYY (20/12/2024)
+    - MM/DD/YYYY (12/20/2024)
+    - Month DD, YYYY (December 20, 2024)
+    - DD Month YYYY (20 December 2024)
+    - YYYYMMDD (20241220)
+    
+    Returns:
+        datetime.date object if parsing succeeds, None otherwise
+    """
+    if not date_str:
+        return None
+    date_str = date_str.strip()
 
-NOTICE:
-For Jekyll native '_posts' layout it must follow a specific naming convention: YYYY-MM-DD-title.markdown,
-so a simple parsing of markdown's metadata is necessary in order to handle this convention.
-"""
-def slugify(filename: ObsidianPath):
+    # Try common formats in order
+    formats = [
+        '%Y-%m-%d',    # 2024-12-20
+        '%d.%m.%Y',    # 20.12.2024
+        '%d/%m/%Y',    # 20/12/2024
+        '%m/%d/%Y',    # 12/20/2024
+        '%B %d, %Y',   # December 20, 2024
+        '%d %B %Y',    # 20 December 2024
+        '%Y%m%d',      # 20241220
+    ]
+    
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+    return None
 
-    pass 
+def slugify(filepath: ObsidianPath):
+    """
+    Transform a filename into a URL-safe slug following Jekyll conventions.
+    
+    Args:
+        file_path: Path object or string filename to convert
+        
+    Returns:
+        A sanitized filename with:
+        - Only lowercase letters, numbers, and hyphens
+        - No special characters or punctuation
+        - Spaces converted to hyphens
+        - Multiple hyphens collapsed
+        - Leading/trailing hyphens removed
+        
+    Example:
+        "Hello World!.md" -> "hello-world.md"
+    NOTICE:
+        For Jekyll native '_posts' layout it must follow a specific naming convention: YYYY-MM-DD-title.markdown,
+        A simple parsing of markdown's metadata is necessary in order to handle this convention.
+    """
+    # Remove the file extension temporarily
+    stem = Path(filepath).stem.strip()
+    ext = Path(filepath).suffix.strip()
+    
+    # Normalize unicode characters (convert é to e, etc.)
+    stem = unicodedata.normalize('NFKD', stem)
+    
+    # Convert to ASCII, ignoring non-ASCII chars
+    stem = stem.encode('ascii', 'ignore').decode('ascii')
+    
+    # Replace various special characters with hyphens
+    stem = re.sub(r'[^\w\s-]', '', stem)  # Remove remaining non-word chars
+    stem = re.sub(r'[\s_-]+', '-', stem)  # Convert spaces/underscores to hyphens
+    
+    # Convert to lowercase and reattach extension
+    slug = stem.lower() + ext.lower()
 
-def transform_obsidian_to_jekyll():
-    slugify(name)
+    # Special case for post layouts
+    metadata = read_md_metadata(filepath)
+    if metadata.get("layout") == "post":
+        date_str = metadata.get("date")
+        if not date_str:
+            raise PublishTransformError(
+                filepath=str(filepath),
+                reason="Missing date field for post layout"
+            )
+        parsed_date = parse_date(date_str)
+        if parsed_date is not None:
+            date_prefix = f"{parsed_date.year:04d}-{parsed_date.month:02d}-{parsed_date.day:02d}"
+            slug = f"{date_prefix}-{slug}"
+        else:
+            raise PublishTransformError(
+                filepath=str(filepath),
+                reason="Invalid date front matter provided for a post layout."
+            )
+            
+    return slug
+
+def transform_obsidian_to_jekyll(filepath: ObsidianPath):
+    slugify(filepath)
     transform_references()
     images = get_referenced_images()
     pass 
@@ -190,11 +294,17 @@ def main():
         publish_files = get_directory_md_files(publish_subdirectory)
         
         #3. create jekyll-friendly files from the obsidian files and move them to appropriate places
+        published = 0
         for publish_file in publish_files:
-            jekyll_file, new_referenced_images = transform_obsidian_to_jekyll(publish_file)
-            referenced_images += new_referenced_images
+            try:
+                jekyll_file, new_referenced_images = transform_obsidian_to_jekyll(ObsidianPath(publish_file))
+                referenced_images += new_referenced_images
+                transfer_file(jekyll_file, jekyll_subdirectory)
 
-            transfer_file(jekyll_file, jekyll_subdirectory)
+                print(f"Transfered {publish_file}. [{published}/{len(publish_files)}]")
+            except PublishTransformError as e:
+                print(f"Transfering failed for {e.filepath}")
+                print(f"Reason: {e.reason}")
 
         #4. copy referenced images into image section
         transfer_images(referenced_images)

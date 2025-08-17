@@ -364,6 +364,111 @@ Author: Smith
             
             # Cleanup
             md_file.unlink()
+    def test_parse_date(self):
+        """Test parsing dates in various formats"""
+        test_cases = [
+            # (input_date, expected_day, expected_month, expected_year)
+            ("2024-12-20", 20, 12, 2024),
+            ("20.12.2024", 20, 12, 2024),
+            ("20/12/2024", 20, 12, 2024),
+            ("12/20/2024", 20, 12, 2024),
+            ("December 20, 2024", 20, 12, 2024),
+            ("20 December 2024", 20, 12, 2024),
+            ("20241220", 20, 12, 2024),
+            # Not in supported formats, should fail
+            ("2024.12.20", None, None, None),
+            ("invalid-date", None, None, None),
+            ("", None, None, None),
+            ("20-12-2024", None, None, None),  
+            ("15 Jan 2023", None, None, None),
+        ]
+
+        for date_str, expected_day, expected_month, expected_year in test_cases:
+            with self.subTest(date_str=date_str):
+                result = parse_date(date_str)
+                if expected_day is None:
+                    self.assertIsNone(result)
+                else:
+                    self.assertEqual(result.day, expected_day, date_str)
+                    self.assertEqual(result.month, expected_month, date_str)
+                    self.assertEqual(result.year, expected_year, date_str)
+
+
+    def test_slugify(self):
+        """Test filename slugification for Jekyll"""
+        # Test 1: Basic filename conversion
+        with self.subTest("Basic filename conversion"):
+            test_file = self.obsidian_publish_dir / "Hello World!.md"
+            test_file.touch()
+            self.assertEqual(slugify(test_file), "hello-world.md")
+            test_file.unlink()
+
+        # Test 2: Filename with special characters
+        with self.subTest("Filename with special characters"):
+            test_file = self.obsidian_publish_dir / "File@Name#123.pdf"
+            test_file.touch()
+            self.assertEqual(slugify(test_file), "filename123.pdf")
+            test_file.unlink()
+
+        # Test 3: Jekyll post with valid date
+        with self.subTest("Jekyll post with valid date"):
+            test_file = self.obsidian_publish_dir / "Post.md"
+            test_file.write_text("""---
+layout: post
+date: 2024-12-20
+---
+# Content""")
+            self.assertEqual(slugify(test_file), "2024-12-20-post.md")
+            test_file.unlink()
+
+        # Test 4: Jekyll post with missing date
+        with self.subTest("Jekyll post with missing date"):
+            test_file = self.obsidian_publish_dir / "Bad Post.md"
+            test_file.write_text("""---
+layout: post
+---
+# Content""")
+            with self.assertRaises(PublishTransformError) as cm:
+                slugify(test_file)
+            self.assertIn("Missing date field", str(cm.exception))
+            test_file.unlink()
+
+        # Test 5: Jekyll post with invalid date
+        with self.subTest("Jekyll post with invalid date"):
+            test_file = self.obsidian_publish_dir / "Bad Post.md"
+            test_file.write_text("""---
+layout: post
+date: invalid-date
+---
+# Content""")
+            with self.assertRaises(PublishTransformError):
+                slugify(test_file)
+            test_file.unlink()
+
+        # Test 6: Date formatting with leading zeros
+        with self.subTest("Date formatting with leading zeros"):
+            test_file = self.obsidian_publish_dir / "Post.md"
+            test_file.write_text("""---
+layout: post
+date: 2024-1-5
+---
+# Content""")
+            self.assertEqual(slugify(test_file), "2024-01-05-post.md")
+            test_file.unlink()
+
+        # Test 7: Unicode handling
+        with self.subTest("Unicode handling"):
+            test_file = self.obsidian_publish_dir / "Café_Über.md"
+            test_file.touch()
+            self.assertEqual(slugify(test_file), "cafe-uber.md")
+            test_file.unlink()
+
+        # Test 8: Multiple spaces/special chars
+        with self.subTest("Multiple spaces/special chars"):
+            test_file = self.obsidian_publish_dir / "  File   Name--with___chars!.txt"
+            test_file.touch()
+            self.assertEqual(slugify(test_file), "file-name-with-chars.txt")
+            test_file.unlink()
 
 if __name__ == "__main__":
     unittest.main()
