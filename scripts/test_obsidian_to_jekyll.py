@@ -525,5 +525,24 @@ date: 2024-1-5
                     self.assertEqual(result_output, expected_output)
                     self.assertEqual(result_path, Path(expected_path))
 
+    @patch('pathlib.Path.exists', return_value=True)
+    @patch('pathlib.Path.mkdir')
+    @patch('obsidian_to_jekyll.copy_file')
+    def test_ensure_image_available(self, mock_copy, mock_mkdir, mock_exists):
+        """Unit test for ensure_image_available with mocked filesystem"""
+        src = self.fake_image
+        dst = self.jekyll_img_dir / "fake_tmp" /self.fake_image.name
+
+        
+        # Test successful copy
+        self.assertTrue(ensure_image_available(src, dst))
+        mock_mkdir.assert_not_called()
+        mock_copy.assert_called_once_with(src, dst)
+        
+        # Test missing source
+        mock_exists.return_value = False
+        with self.assertRaises(PublishTransformError):
+            ensure_image_available(src, dst)
+
 if __name__ == "__main__":
     unittest.main()
