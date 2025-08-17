@@ -403,12 +403,6 @@ def transfer_publish_file(source_filepath: ObsidianPath, target_directory: Jekyl
         dst.unlink()
         raise e
 
-# Image reference can be in form:
-    #1. ![[image.png]] // has to be in Assets/Image
-def get_referenced_images(filepath: JekyllPath):
-    # Gets the paths of referenced images
-    pass
-
 def main():
     publish_subdirectories = get_publish_subdirectories()
 
@@ -424,8 +418,6 @@ def main():
         for publish_file in publish_files:
             try:
                 transfer_publish_file(publish_file, jekyll_subdirectory)
-                #4. copy referenced images into image section
-                transfer_referenced_images(jekyll_subdirectory / jekyll_file)
 
                 publish = publish+1
                 print(f"Transfered {publish_file}. [{published}/{len(publish_files)}]")
