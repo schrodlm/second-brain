@@ -92,11 +92,48 @@ def remove_contents_of(directory: JekyllPath):
 
 """
 Retrieves the publish files that will be converted to jekyll-friendly files and published to the web
-- currently it does assume that Publish directory will not contain any subdirectories, if such a feature is wanted, it needs to be implemented here first and foremost
+- currently it does assume that Publish subdirectories will not contain any nested subdirectories, if such a feature is wanted, it needs to be implemented here first and foremost
 """
 def get_directory_md_files(directory: Path) -> list[Path]:
     return list(directory.glob("*.md"))
-            
+
+
+
+def read_md_metadata(markdown_path: Path):
+    """Extract metadata from markdown file's front matter.
+
+    Args:
+        markdown_path: Path to a markdown file
+    
+    Returns:
+        Dictionary containung the metadata key-value pairs.
+        Returns empty dict if no metadata is found or file can't be read.
+    """
+    metadata = {}
+    try:
+        with markdown_path.open('r', encoding='utf-8') as file:
+            lines = iter(file)
+
+            #Find the opening "---"
+            for line in lines:
+                if line.strip() == "---":
+                    break
+            # No front matter found
+            else:
+                return metadata
+
+            for line in lines:
+                line = line.strip()
+                if line == "---":
+                    return metadata
+                if not line or ':' not in line:
+                    continue #Skip empty or invalid lines
+                
+                key,value = line.split(':', 1)
+                metadata[key.strip()] = value.strip()
+    except (IOError, UnicodeDecodeError):
+        return {}
+    return {}
 
 """
 Transform obsidian markdown files names to name parsable by jekyll 

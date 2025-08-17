@@ -244,6 +244,126 @@ Also references [[file2#chapter]].
             real_md.unlink()
             symlink_md.unlink()
 
+    def test_read_md_metadata(self):
+        """Test reading metadata from markdown front matter"""
+        # Test 1: Normal front matter
+        with self.subTest("Normal front matter"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "normal_frontmatter.md"
+            md_file.write_text("""---
+Title: Test Document
+Author: John Doe
+Date: 2023-01-01
+---
+# Content""")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {
+                'Title': 'Test Document',
+                'Author': 'John Doe',
+                'Date': '2023-01-01'
+            })
+            
+            # Cleanup
+            md_file.unlink()
+
+        # Test 2: Unclosed front matter
+        with self.subTest("Unclosed front matter"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "unclosed_frontmatter.md"
+            md_file.write_text("""---
+Title: Unclosed
+Author: Test
+# Content""")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {})
+            
+            # Cleanup
+            md_file.unlink()
+
+        # Test 3: No front matter
+        with self.subTest("No front matter"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "no_frontmatter.md"
+            md_file.write_text("# Just regular content")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {})
+            
+            # Cleanup
+            md_file.unlink()
+
+        # Test 4: Empty front matter
+        with self.subTest("Empty front matter"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "empty_frontmatter.md"
+            md_file.write_text("""---
+---
+# Content""")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {})
+            
+            # Cleanup
+            md_file.unlink()
+
+        # Test 5: Values with colons
+        with self.subTest("Values with colons"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "colons_in_values.md"
+            md_file.write_text("""---
+Title: Document: With Colon
+Time: 12:30:45
+---
+# Content""")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {
+                'Title': 'Document: With Colon',
+                'Time': '12:30:45'
+            })
+            
+            # Cleanup
+            md_file.unlink()
+
+        # Test 6: Invalid lines in front matter
+        with self.subTest("Invalid lines in front matter"):
+            # Arrange
+            md_file = self.obsidian_publish_dir / "invalid_lines.md"
+            md_file.write_text("""---
+Title: Invalid Lines
+This line has no colon
+Author: Smith
+---
+# Content""")
+            
+            # Act
+            result = read_md_metadata(md_file)
+            
+            # Assert
+            self.assertEqual(result, {
+                'Title': 'Invalid Lines',
+                'Author': 'Smith'
+            })
+            
+            # Cleanup
+            md_file.unlink()
 
 if __name__ == "__main__":
     unittest.main()
