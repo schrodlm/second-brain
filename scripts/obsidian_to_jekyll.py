@@ -256,12 +256,93 @@ def slugify(filepath: ObsidianPath):
     return slug
 
 
-# Can be in forms:
-    #1. [[Reference]]
-    #2. [[SMT#bit-vectors]]
-    #3. [[RealReference | Text]] | [[RealReference| Text]] | [[RealReference |Text]]
-#If URL points to file not in publish directory -> remove the link, but leave the text
-#If URL points to file in publish directory -> transform the link
+def transform_md_match(match: re.Match, src_dir: ObsidianPath = OBSIDIAN_IMAGE_DIR, dest_dir: JekyllPath = JEKYLL_IMAGE_DIR):
+    """
+    Transforms standard Markdown links and images - ![]() or []() - into Jekyll-compatible format.
+
+    Handles the following cases:
+    - Image references (![alt](path)): 
+        * Copies images to destination directory
+        * Updates paths to be relative to destination
+        * Returns alt text if image unavailable
+    - External links [](): Leaves unchanged
+    - Document links [](): Leaves unchanged (per project requirements)
+
+    Returns:
+        Transformed markdown string or original string if no transformation needed
+
+    Examples:
+        # Local image transformation
+        Input:  ![logo](images/logo.png)
+        Output: ![logo]($(dst_dir)/images/logo.png)
+
+        # External image (unchanged)
+        Input:  ![logo](https://example.com/logo.png)
+        Output: ![logo](https://example.com/logo.png)
+
+        # Document link (unchanged per current requirements)
+        Input:  [Readme](README.md)
+        Output: [Readme](README.md)
+
+        # Missing image returns alt text
+        Input:  ![missing](nonexistent.png)
+        Output: missing
+    """
+    is_image = match.group(1) == '!'
+    alt_text = match.group(2)
+    url = match.group(3)
+    
+    if is_image and not url.startswith(('http://', 'https://')):
+        img_path = Path(url)
+        src_path = src_dir / img_path
+        dst_path = dest_dir / img_path
+        
+        if ensure_image_available(src_path, dst_path):
+            rel_path = dst_path.relative_to(dest_dir)
+            return f"![{alt_text}]({rel_path})"
+        return alt_text
+    return match.group(0)  # Leave external links and doc links unchanged
+
+def transform_obsidian_match(match, src_dir: ObsidianPath = OBSIDIAN_IMAGE_DIR, dest_dir: JekyllPath = JEKYLL_IMAGE_DIR):
+    """
+    Transforms Obsidian-style links ([[ ]]) into Jekyll-compatible format.
+
+    Args:
+        match: re.Match object from Obsidian link pattern
+        src_dir: Source directory for images (default: OBSIDIAN_IMAGE_DIR)
+        dest_dir: Destination directory for images (default: JEKYLL_IMAGE_DIR)
+
+    Returns:
+        Transformed markdown string or display text
+
+    Examples:
+        # Obsidian image with dimensions
+        Input:  ![[images/logo.png|200]]
+        Output: ![Image](../assets/images/logo.png){:width="200"}
+
+        # Obsidian document link with display text
+        Input:  [[README.md|Readme File]]
+        Output: Readme File
+
+        # Obsidian image with alt text
+        Input:  ![[logo.png|Company Logo]]
+        Output: ![Company Logo](../assets/logo.png)
+    """
+    is_image = match.group(1) == '!'
+    full_ref = match.group(2)
+    if is_image:
+        new_content, relative_src_path = transform_image_ref(full_ref, src_dir, dest_dir)
+        dst_path = dest_dir / relative_src_path # src_path should be realtive to OBSIDIAN_IMAGE_DIR
+        src_path = src_dir / relative_src_path
+
+        ensure_image_available(
+            src_path,
+            dst_path
+        )
+        return new_content
+    else:
+        return transform_md_ref(full_ref) #do nothing with non-image references
+    
 def transform_references(filepath: JekyllPath, src_dir: ObsidianPath = OBSIDIAN_IMAGE_DIR, dest_dir: JekyllPath = JEKYLL_IMAGE_DIR):
     """
     Transform Obsidian-style references to Jekyll-compatible format.
@@ -285,40 +366,6 @@ def transform_references(filepath: JekyllPath, src_dir: ObsidianPath = OBSIDIAN_
     # Patterns for different reference types
     obsidian_link_pattern = re.compile(r'(!?)\[\[([^\]\[]+)\]\]')  # ![[ ]] or [[ ]]
     md_link_pattern = re.compile(r'(!?)\[([^\]]+)\]\(([^)]+)\)')    # ![]() or []()
-
-    def transform_obsidian_match(match):
-        is_image = match.group(1) == '!'
-        full_ref = match.group(2)
-        if is_image:
-            new_content, relative_src_path = transform_image_ref(full_ref)
-            dst_path = dest_dir / relative_src_path # src_path should be realtive to OBSIDIAN_IMAGE_DIR
-            src_path = src_dir / relative_src_path
-
-            ensure_image_available(
-                src_path,
-                dst_path
-            )
-            return new_content
-        else:
-            return transform_md_ref(full_ref) #do nothing with non-image references
-    
-    def transform_md_match(match):
-        is_image = match.group(1) == '!'
-        alt_text = match.group(2)
-        url = match.group(3)
-        
-        if is_image and not url.startswith(('http://', 'https://')):
-            img_path = Path(url)
-            src_path = src_dir / img_path
-            dst_path = dest_dir / img_path
-            
-            if ensure_image_available(src_path, dst_path):
-                rel_path = dst_path.relative_to(filepath.parent)
-                return f"![{alt_text}]({rel_path})"
-            return alt_text
-        
-        return match.group(0)  # Leave external links and doc links unchanged
-    
     # Transform all reference types
     content = obsidian_link_pattern.sub(transform_obsidian_match, content)
     content = md_link_pattern.sub(transform_md_match, content)
