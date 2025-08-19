@@ -4,11 +4,12 @@
   "promptDelete": false,
   "vimMode": false,
   "alwaysUpdateLinks": true,
-  "attachmentFolderPath": "Images",
+  "attachmentFolderPath": "Assets/Images",
   "pdfExportSettings": {
     "pageSize": "Letter",
     "landscape": false,
     "margin": "0",
     "downscalePercent": 100
-  }
+  },
+  "trashOption": "none"
 }

@@ -4,7 +4,7 @@ layout: post
 
 title: "Turing machines and whatnot"
 
-date: 2024-12-20 20:31:01 +0100
+date: 2024-12-20
 
 categories: jekyll update
 
