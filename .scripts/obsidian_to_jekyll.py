@@ -331,8 +331,8 @@ def transform_obsidian_match(match, src_dir: ObsidianPath = OBSIDIAN_IMAGE_DIR, 
     is_image = match.group(1) == '!'
     full_ref = match.group(2)
     if is_image:
-        new_content, relative_src_path = transform_image_ref(full_ref, src_dir, dest_dir)
-        dst_path = dest_dir / relative_src_path # src_path should be realtive to OBSIDIAN_IMAGE_DIR
+        new_content, relative_src_path = transform_image_ref(full_ref, dest_dir, JEKYLL_ROOT)
+        dst_path = dest_dir / relative_src_path
         src_path = src_dir / relative_src_path
 
         ensure_image_available(
@@ -367,8 +367,10 @@ def transform_references(filepath: JekyllPath, src_dir: ObsidianPath = OBSIDIAN_
     obsidian_link_pattern = re.compile(r'(!?)\[\[([^\]\[]+)\]\]')  # ![[ ]] or [[ ]]
     md_link_pattern = re.compile(r'(!?)\[([^\]]+)\]\(([^)]+)\)')    # ![]() or []()
     # Transform all reference types
-    content = obsidian_link_pattern.sub(transform_obsidian_match, content)
     content = md_link_pattern.sub(transform_md_match, content)
+    content = obsidian_link_pattern.sub(transform_obsidian_match, content)
+
+    filepath.write_text(content, encoding='utf-8')
 
 def transform_md_ref(full_ref: str) -> str:
     """
@@ -414,7 +416,7 @@ def transform_image_ref(full_ref: str, new_parent_dir: JekyllPath = JEKYLL_IMAGE
             alt_text = part
     
     # Build the image tag - 
-    img_tag = f"![{alt_text}]({(new_parent_dir/relative_img_path).relative_to(root)})"
+    img_tag = f"![{alt_text}](/{(new_parent_dir/relative_img_path).relative_to(root)})"
 
     # Add dimensions if specified
     if width and height:
@@ -451,7 +453,9 @@ def transfer_publish_file(source_filepath: ObsidianPath, target_directory: Jekyl
         raise e
 
 def main():
+    print("Starting the trasnfer process...")
     publish_subdirectories = get_publish_subdirectories()
+    print(f"Found {len(publish_subdirectories)} publish subdirectories: {publish_subdirectories}")
 
     for publish_subdirectory in publish_subdirectories:
         jekyll_subdirectory = get_jekyll_directory(publish_subdirectory)
@@ -466,8 +470,11 @@ def main():
             try:
                 transfer_publish_file(publish_file, jekyll_subdirectory)
 
-                publish = publish+1
+                published = published+1
                 print(f"Transfered {publish_file}. [{published}/{len(publish_files)}]")
             except PublishTransformError as e:
                 print(f"Transfering failed for {e.filepath}")
                 print(f"Reason: {e.reason}")
+
+if __name__ == "__main__":
+    main()

@@ -554,5 +554,15 @@ date: 2024-1-5
             with self.assertRaises(PublishTransformError):
                 ensure_image_available(src, dst)
 
+    # def test_transform_md_match(self):
+    #     image_test = ['!', 'alt text', 'subdir/image.png', '![alt text | JEKYLL_IMG_DIR/image.png]']
+    #     external_link_test = ['', '']
+    #     # External links []()
+    #     match_mock = Mock()
+    #     match_mock.group.side_effect = 
+
+    #     result = transform_md_match(match_mock)
+    #     print(f"RESULT: {result}")
+
 if __name__ == "__main__":
     unittest.main()
