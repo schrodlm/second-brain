@@ -72,5 +72,3 @@ Control unit of the CPU will then send a signal to specific functional units tha
 Also, in most processors, there can be interruptions. When an interrupt happens, the CPU jumps to an interrupt service routine, does what needs to be done, and then goes back to the main program.
 ## Conclusion
 Processing an instruction involves several steps that enable a CPU to execute any command from simple data movements to complex calculations. The instruction cycle, fetch, decode, execute, is fundamental in understanding how CPUs operate. This cycle not only allows the CPU to carry out commands but also manages how these instructions interact with different parts of the system architecture.
-
-![[Pasted image 20250819172438.png]]
