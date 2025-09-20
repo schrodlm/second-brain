@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md.md",
+                "file": "Publish/Posts/An unexamined habit.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "README.md"
+              "title": "An unexamined habit"
             }
           }
         ]
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md.md",
+                "file": "Publish/Posts/An unexamined habit.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from README.md"
+              "title": "Outgoing links from An unexamined habit"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md.md",
+                "file": "Publish/Posts/An unexamined habit.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of README.md"
+              "title": "Outline of An unexamined habit"
             }
           },
           {
@@ -185,9 +185,12 @@
   },
   "active": "ee26e9e2be577a98",
   "lastOpenFiles": [
+    "README.md",
+    "Publish/Posts/What is an instruction.md",
+    "Publish/Posts/Turing Machine.md",
+    "Publish/Posts/Automating my site.md",
     "Publish/Posts/An unexamined habit.md",
     "README.md.md",
-    "Publish/Posts/Automating my site.md",
     "Assets/Images/network_switch.png",
     "Assets/Images/my_drawing_17-09-2024.png",
     "Assets/Images/modelling_system_example.pdf",
@@ -203,8 +206,6 @@
     "Assets",
     "Images/modelling_system_example.pdf",
     "Images",
-    "Publish/Posts/What is an instruction.md",
-    "Publish/Posts/Turing Machine.md",
     "Publish/Posts/Test.md",
     "Others/Standup.md",
     "Others/Ronnie.md",
@@ -230,7 +231,6 @@
     "Publish/Projects/Goob the Renderer.md",
     "schrodlm.github.io/_posts/2024-12-20-turing-machine.md",
     "schrodlm.github.io/_projects/analysis-of-rotor-models.md",
-    "schrodlm.github.io/_projects/goob-the-renderer.md",
     "Untitled.canvas",
     "Books/Untitled.canvas",
     "Untitled 1.canvas",
