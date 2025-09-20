@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ""
+title: "An unexamined habit"
 date: 20.9.2025
 categories: jekyll update
 ---
