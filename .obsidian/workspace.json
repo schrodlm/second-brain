@@ -11,10 +11,14 @@
             "id": "ee26e9e2be577a98",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "README.md.md",
+                "mode": "source",
+                "source": true
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "README.md"
             }
           }
         ]
@@ -109,11 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "README.md.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links"
+              "title": "Outgoing links from README.md"
             }
           },
           {
@@ -137,12 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "README.md.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of README.md"
             }
           },
           {
@@ -179,8 +185,9 @@
   },
   "active": "ee26e9e2be577a98",
   "lastOpenFiles": [
-    "Publish/Posts/Automating my site.md",
     "Publish/Posts/An unexamined habit.md",
+    "README.md.md",
+    "Publish/Posts/Automating my site.md",
     "Assets/Images/network_switch.png",
     "Assets/Images/my_drawing_17-09-2024.png",
     "Assets/Images/modelling_system_example.pdf",
