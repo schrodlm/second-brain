@@ -11,14 +11,10 @@
             "id": "ee26e9e2be577a98",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Publish/Posts/Automating my site.md",
-                "mode": "source",
-                "source": true
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Automating my site"
+              "title": "New tab"
             }
           }
         ]
@@ -113,12 +109,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Comp-Sci/Thesis/Hoare logic.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Hoare logic"
+              "title": "Outgoing links"
             }
           },
           {
@@ -128,7 +123,9 @@
               "type": "tag",
               "state": {
                 "sortOrder": "frequency",
-                "useHierarchy": true
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-tags",
               "title": "Tags"
@@ -140,10 +137,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Comp-Sci/Thesis/Hoare logic.md"
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Hoare logic"
+              "title": "Outline"
             }
           },
           {
@@ -180,15 +179,33 @@
   },
   "active": "ee26e9e2be577a98",
   "lastOpenFiles": [
-    "Assets/Images/Pasted image 20250820203255.png",
-    "Publish/Posts/Turing Machine.md",
     "Publish/Posts/Automating my site.md",
+    "Publish/Posts/An unexamined habit.md",
+    "Assets/Images/network_switch.png",
+    "Assets/Images/my_drawing_17-09-2024.png",
+    "Assets/Images/modelling_system_example.pdf",
+    "Assets/Images/isa_as_an_interface.png",
+    "Assets/Images/abstraction_hierarchy.png",
+    "Assets/Images/abs_adressing_mode.png",
+    "Assets/Images/Pasted image 20250820203255.png",
+    "Assets/Images/Pasted image 20250819172438.png",
+    "Assets/Images/Pasted image 20250819172435.png",
+    "Assets/Images/Pasted image 20241023110027.png",
+    "Assets/Images/Pasted image 20241023105955.png",
+    "Assets/Images",
+    "Assets",
+    "Images/modelling_system_example.pdf",
+    "Images",
+    "Publish/Posts/What is an instruction.md",
+    "Publish/Posts/Turing Machine.md",
+    "Publish/Posts/Test.md",
+    "Others/Standup.md",
+    "Others/Ronnie.md",
+    "Untitled.md",
+    "Others",
     "Publish/Projects/ASCII Art Generator.md",
     "Publish/Projects/Analysis of Rotor Models.md",
-    "Publish/Posts/What is an instruction.md",
     "jekyll_repository/assets/pdf/cv.pdf",
-    "jekyll_repository/assets/img/abstraction_hierarchy.png",
-    "jekyll_repository/assets/img/Pasted image 20250819172438.png",
     "jekyll_repository/assets/pdf",
     "jekyll_repository/assets/main.scss",
     "jekyll_repository/assets/img",
@@ -197,35 +214,16 @@
     "jekyll_repository/_projects/analysis-of-rotor-models.md",
     "jekyll_repository/_posts/2025-02-14-what-is-an-instruction.md",
     "jekyll_repository/_posts/2024-12-20-turing-machine.md",
-    "jekyll_repository/_layouts/project.html",
-    "jekyll_repository/_layouts/post.html",
-    "jekyll_repository/_includes/related_project.html",
-    "jekyll_repository/_includes/related_posts.html",
-    "jekyll_repository/_includes/header.html",
-    "jekyll_repository/_data/navigation.yml",
-    ".jekyll_repository/assets/img/abstraction_hierarchy.png",
-    ".jekyll_repository/assets/img/Pasted image 20250819172438.png",
     ".jekyll_repository/_projects/goob-the-renderer.md",
     ".jekyll_repository/_projects/ascii-art-generator.md",
     ".jekyll_repository/_projects/analysis-of-rotor-models.md",
     ".jekyll_repository/_posts/2025-02-14-what-is-an-instruction.md",
     ".jekyll_repository/_posts/2024-12-20-turing-machine.md",
     "schrodlm.github.io/_posts/2025-02-14-what-is-an-instruction.md",
-    "schrodlm.github.io/assets/img/pasted-image-20250819172438.png",
-    "schrodlm.github.io/assets/img/abstraction-hierarchy.png",
-    "schrodlm.github.io/assets/img/abstraction_hierarchy.png",
-    "Assets/Images/abstraction_hierarchy.png",
     "Publish/Projects/Goob the Renderer.md",
-    "Assets/Images/Pasted image 20250819172438.png",
-    "schrodlm.github.io/assets/img/Pasted image 20250819172438.png",
     "schrodlm.github.io/_posts/2024-12-20-turing-machine.md",
     "schrodlm.github.io/_projects/analysis-of-rotor-models.md",
     "schrodlm.github.io/_projects/goob-the-renderer.md",
-    "schrodlm.github.io/_projects/ascii-art-generator.md",
-    "Comp-Sci/Computer architecture/ISA.md",
-    "schrodlm.github.io/_projects/goob.md",
-    "schrodlm.github.io/_projects/ascii_art.md",
-    "Untitled.md",
     "Untitled.canvas",
     "Books/Untitled.canvas",
     "Untitled 1.canvas",
