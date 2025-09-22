@@ -36,7 +36,7 @@ They cannot:
 - generate specification
 - tell us how to fix bugs
 
-# Role of [[SMT]] in software verification
+# Role of [[smt]] in software verification
 SMT solvers are used as part of the **automated reasoning** required in software verification.
 
 They help to answer question like: 
@@ -47,15 +47,15 @@ It does that by transforming these question into [[logical formulas]]
 
 ## Process 
 #### 1. Abstraction or Symbolic execution
-Software code is abstracted into logical formulas. This may involve using techniques like [[Comp-Sci/SMT/software verification/informal reasoning/symbolic execution]], where **program inputs are treated as symbolic variables rather then concrete values**
+Software code is abstracted into logical formulas. This may involve using techniques like [[symbolic execution]], where **program inputs are treated as symbolic variables rather then concrete values**
 
 Keep in mind that symbolic execution is only one of the techniques used in this broad term, there are other techniques like:
-- [[Comp-Sci/SMT/software verification/model checking/model checking]]
+- [[model checking]]
 - [[static analysis]]
 - [[testing]]
 
 #### 2. Translation to SMT formulas
-The abstracted logic (often in [[first-order logic]]) is exressed in the [[SMT-LIB]] format, and theories (such as integer arithetic, array, or bit-vectors) are defined based on the properties of the program being verified
+The abstracted logic (often in [[first-order logic]]) is exressed in the [[stm-lib]] format, and theories (such as integer arithetic, array, or bit-vectors) are defined based on the properties of the program being verified
 
 #### 3. Checking satisfiability
 The SMT solver checks whether the [[logical formulas]] derived from the program are[[logical formulas#satisfiability | satisfiable]]. If they are, it indicated that a bug or a violation of the specification might exist. If the formulas are [[logical formulas#unsatisfiablity | unsatisfiable]], it indicated that program is correct for that specific path.

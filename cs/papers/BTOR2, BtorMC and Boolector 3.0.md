@@ -13,9 +13,9 @@ authors:
 
 Paper: [BTOR2, BtorMC and Boolector 3.0](https://fmv.jku.at/papers/NiemetzPreinerWolfBiere-CAV18.pdf)
 ## Abstract 
-It introduces a new word-level [[model checking format]] [[BTOR2]] that focuses on capturing models of hardware and **potentially software**. This format is supported by [[model checker]] [[BtorMC]] which is built on top of a [[SMT solver]] [[Boolector]].
+It introduces a new word-level [[model checking format]] [[btor2]] that focuses on capturing models of hardware and **potentially software**. This format is supported by [[model checker]] [[BtorMC]] which is built on top of a [[SMT solver]] [[Boolector]].
 
-Principles on which it is built are [[bit-level format]] [[AIGER]] and closely follows semantics of [[SMT-LIB]] logics of [[bit-vectors]].
+Principles on which it is built are [[bit-level format]] [[AIGER]] and closely follows semantics of [[stm-lib]] logics of [[bit-vectors]].
 
 ## Key Contributions
 

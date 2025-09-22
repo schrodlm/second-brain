@@ -33,10 +33,8 @@
     "lucideIconPackType": "native",
     "debugMode": false
   },
-  "Playground": "LiPalmtree",
-  "Books": "LiBook",
-  "Misc": "LiAxe",
-  "Comp-Sci": "LiComputer",
-  "Logs": "LiLogs",
-  "Assets/Images": "🖼"
+  "logs": "LiLogs",
+  "assets/images": "🖼",
+  "misc": "LiAxe",
+  "cs": "LiComputer"
 }

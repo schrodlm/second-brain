@@ -1,2 +1,0 @@
-I wanted a new challenge, an interesting project after I sucesfully finished my bachelor's, I came up with a lot during these last four years, but I did not have much time, so there was a lot to pick from. 
-Since at 

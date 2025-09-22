@@ -22,7 +22,7 @@ Each path has an associated **path condition** (a logical expression that must h
 Symbolic execution explores all possible execution paths through the program, creating logical formulas that represent the **logical constrains** along each path. This can handle complex branching, loops, and function calls.
 
 ##### 4. [[SMT solver]] involvement
-At each branch point (or after full symbolic execution) the **logical constraints** are sent to SMT solver since they can be represented with logical formulas. The solver checks whether the path condition is [[SMT#satisfiability | satisfiable]]. 
+At each branch point (or after full symbolic execution) the **logical constraints** are sent to SMT solver since they can be represented with logical formulas. The solver checks whether the path condition is [[smt#satisfiability| satisfiable]]. 
 If it is, that means **there exist some input that would case the program to follow that path**. If the path is unsatisfiable, the program will **never** take that path and it can be pruned from the analysis.
 
 

@@ -13,7 +13,7 @@ In this logic, you can use **temporal operators** such as:
 
 The worlds (or states) form a total order, which means each world has exactly one "next" world, creating a linear structure. In this way, LTL describes a single-threaded, sequential progression of time.
 
-You would use **LTL** when you're interested in the temporal properties of a system's execution (i.e., how things evolve over time in a linear fashion) and don't need to focus on the precise interleaving of concurrent actions. On the other hand, **[[Comp-Sci/SMT/software verification/model checking/model checking#Repesenting finite state systems| interleaving models]]** are more suitable when you need to model and reason about the detailed interaction between multiple concurrent processes.
+You would use **LTL** when you're interested in the temporal properties of a system's execution (i.e., how things evolve over time in a linear fashion) and don't need to focus on the precise interleaving of concurrent actions. On the other hand, **[[model checking#Repesenting finite state systems| interleaving models]]** are more suitable when you need to model and reason about the detailed interaction between multiple concurrent processes.
 
 ### Scenario: System with a Request-Response Behavior
 
@@ -83,4 +83,4 @@ These formulas are useful for verifying that the system behaves as expected:
 - The **liveness property** ensures that the system will eventually fulfill its duties (e.g., always responding to requests).
 - The **next state property** sets strict timing conditions for how quickly the system should respond.
 
-LTL is commonly used in **[[Comp-Sci/SMT/software verification/model checking/model checking]]** to verify that systems, particularly reactive systems like [[operating systems]], [[network protocols]], or [[hardware controllers]], adhere to these kinds of properties.
+LTL is commonly used in **[[model checking]]** to verify that systems, particularly reactive systems like [[operating systems]], [[network protocols]], or [[hardware controllers]], adhere to these kinds of properties.

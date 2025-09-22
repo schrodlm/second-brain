@@ -7,7 +7,7 @@ It refers to the least restrictive condition that must hold before the execution
 
 In simpler terms, the weakest precondition **is the minimal condition required to guarantee a desired outcome**.
 
-both [[weakest precondition]] and strongest postcondition are closely related to **[[Hoare logic]]**, they can be seens as methods to reason about or calculate parts of a Hoares Triple.
+both [[weakest precondition]] and strongest postcondition are closely related to **[[hoare logic]]**, they can be seens as methods to reason about or calculate parts of a Hoares Triple.
 
 ---
 ## Formally
