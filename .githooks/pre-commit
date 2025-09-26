@@ -3,7 +3,7 @@
 # Path to your Python conversion script, relative to the main Obsidian vault root
 PYTHON_SCRIPT=".scripts/obsidian_to_jekyll.py"
 JEKYLL_SUBMODULE_PATH=".jekyll_repository"
-OBSIDIAN_PUBLISH_DIR="Publish"
+OBSIDIAN_PUBLISH_DIR="publish"
 
 # --- Branch Check ---
 # Only run this hook on master branch
