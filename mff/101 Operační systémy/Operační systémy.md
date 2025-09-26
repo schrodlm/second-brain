@@ -3,6 +3,7 @@ semester: 1
 status: ongoing
 tags:
   - mff_course
+  - watch
 course_code: NSWI200
 ---
 Stránka předmětu: https://d3s.mff.cuni.cz/teaching/nswi200/

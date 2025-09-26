@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "root.md",
+                "file": "publish/projects/Goob the Renderer.md",
                 "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "root"
+              "title": "Goob the Renderer"
             }
           },
           {
@@ -210,9 +210,9 @@
   },
   "active": "eb639f888c33b85b",
   "lastOpenFiles": [
+    "root.md",
     "mff/101 Operační systémy/Operační systémy.md",
     "mff/100 Datové struktury 1/Datové struktury 1.md",
-    "root.md",
     "publish/projects/Goob the Renderer.md",
     "cs/papers/BTOR2, BtorMC and Boolector 3.0.md",
     "cs/smt/stm-lib.md",
