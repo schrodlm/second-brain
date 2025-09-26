@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "mff/101 Operační systémy/Operační systémy.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "Operační systémy"
+              "title": "README"
             }
           }
         ]
@@ -194,10 +194,11 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "b5d89a0791dd4314",
+  "active": "66592eaf2397358c",
   "lastOpenFiles": [
-    "mff/buzerplatz.md",
+    "publish/projects/Goob the Renderer.md",
     "mff/101 Operační systémy/Operační systémy.md",
+    "mff/buzerplatz.md",
     "mff/100 Datové struktury 1/Datové struktury 1.md",
     "cs/thesis/hoare logic.md",
     "logs/dev_log_1.md",
